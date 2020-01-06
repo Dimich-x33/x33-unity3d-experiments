@@ -5,19 +5,24 @@ using UnityEngine;
 public class LevelInit : MonoBehaviour
 {
     public Vector2Int fieldDimensions = new Vector2Int(10, 10);
+    public Vector2Int textureSpritesDimensions = new Vector2Int(8, 6);
     public int spriteSize = 32;
     public Vector2 pivot = new Vector2(0.5f, 0.5f);
     public GameObject[] spriteObjects;
-    public Random rnd = new Random();
+    public Sprite[] sprites;
+
+    public float updateSpriteRate = 0.2f;
 
     // Start is called before the first frame update
     void Start()
     {
         try
         {
+
+
             this.spriteObjects = new GameObject[fieldDimensions.x * fieldDimensions.y];
 
-            var sprites = LoadSprites("Textures");
+            sprites = LoadSprites("Textures");
 
             FillFieldWithSprite(sprites[0]);
 
@@ -40,8 +45,11 @@ public class LevelInit : MonoBehaviour
     public IEnumerator UpdateSpriteObject() {
         while (true)
         {
-            print("Tick");
-            yield return new WaitForSeconds(1f);
+            var r = Random.Range(0, fieldDimensions.x * fieldDimensions.y);
+            var s = Random.Range(0, textureSpritesDimensions.x * textureSpritesDimensions.y);
+            this.spriteObjects[r].GetComponent<SpriteRenderer>().sprite = sprites[s];
+
+            yield return new WaitForSeconds(updateSpriteRate);
         }
     }
 
@@ -52,12 +60,12 @@ public class LevelInit : MonoBehaviour
             throw new System.Exception("Texture not loaded");
         }
 
-        var sprites = new Sprite[48];
+        var sprites = new Sprite[textureSpritesDimensions.x * textureSpritesDimensions.y];
 
-        for (int i = 0, current = 0; i < 6; ++i) {
-            for (int j = 0; j < 8; ++j, ++current)
+        for (int i = 0, c = 0; i < textureSpritesDimensions.y; ++i) {
+            for (int j = 0; j < textureSpritesDimensions.x; ++j, ++c)
             {
-                sprites[current] = Sprite.Create(
+                sprites[c] = Sprite.Create(
                     texture2D,
                     new Rect(spriteSize * j, spriteSize * i, spriteSize, spriteSize),
                     pivot

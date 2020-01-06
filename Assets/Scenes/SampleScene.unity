@@ -164,7 +164,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -221,8 +221,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 87bb57758873d403aa0ef2897819d83b, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fieldDimensions: {x: 10, y: 10}
+  textureSpritesDimensions: {x: 8, y: 6}
+  spriteSize: 32
+  pivot: {x: 0.5, y: 0.5}
+  spriteObjects: []
+  sprites: []
 --- !u!4 &2064591554
 Transform:
   m_ObjectHideFlags: 0
