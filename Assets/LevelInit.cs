@@ -4,24 +4,25 @@ using UnityEngine;
 
 public class LevelInit : MonoBehaviour
 {
-    public Vector2Int textureSpritesDimensions = new Vector2Int(8, 6);
+    public Vector2Int textureSpritesDimensions;
     public int spriteSize = 32;
     public Vector2 pivot = new Vector2(0.5f, 0.5f);
-    public GameObject[][] objects;
+    public GameObject[][] boxes;
+    public GameObject Ball;
 
-    public string text = "Hello";
-
-    public float updateSpriteRate = 0.2f;
+    public PhysicsMaterial2D elasticRubber;
 
     // Start is called before the first frame update
     void Start()
     {
         try
         {
+            this.Ball = Instantiate(Resources.Load<GameObject>("Ball"), Vector3.zero, Quaternion.identity);
+
             var sprites = LoadSprites("Textures");
             var spriteMap = MapSpritesAndSymbols(sprites);
             var charMap = LoadMapFromText("map");
-            this.objects = BuildMap(charMap, spriteMap);
+            this.boxes = BuildMap(charMap, spriteMap);
 
             print("Success!!!");
         }
@@ -35,14 +36,21 @@ public class LevelInit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyUp(KeyCode.RightArrow)) {
+            var rbody = this.Ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
+            rbody.AddForce(new Vector2(50, 0));
+        }
+        if (Input.GetKeyUp(KeyCode.LeftArrow)) {
+            var rbody = this.Ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
+            rbody.AddForce(new Vector2(-50, 0));
+        }
     }
 
     public char[][] LoadMapFromText(string path) {
         var lines = Resources.Load<TextAsset>(path).text.Split('\n');
         char[][] map = new char[lines.Length][];
 
-        for (int i = 0; i < lines.Length; i++)
+        for (int i = 0; i < lines.Length; ++i)
         {
             map[i] = lines[i].ToCharArray();
         }
@@ -54,15 +62,15 @@ public class LevelInit : MonoBehaviour
         var o = new GameObject[charMap.Length][];
         var size = new Vector2Int(charMap[0].Length, charMap.Length);
 
-        for (int y = 0; y < charMap.Length; y++)
+        for (int y = 0; y < charMap.Length; ++y)
         {
             o[y] = new GameObject[charMap[y].Length];
 
-            for (int x = 0; x < charMap[y].Length; x++)
+            for (int x = 0; x < charMap[y].Length; ++x)
             {
                 if (charSpriteMap.ContainsKey(charMap[y][x])) {
                     var pos = new Vector3(x - size.x / 2, y - size.y / 2, Vector3.zero.z);
-                    o[y][x] = this.CreateSpriteObject($"{x}*{y}", charSpriteMap[charMap[y][x]], pos);
+                    o[y][x] = this.CreateStaticSpriteObject($"{x}*{y}", charSpriteMap[charMap[y][x]], pos);
                 }
             }
         }
@@ -93,13 +101,20 @@ public class LevelInit : MonoBehaviour
         return sprites;
     }
 
-    public GameObject CreateSpriteObject(string name, Sprite sprite, Vector3 pos) {
+    public GameObject CreateStaticSpriteObject(string name, Sprite sprite, Vector3 pos) {
         var obj = new GameObject(name);
         var rend = obj.AddComponent(typeof(SpriteRenderer)) as SpriteRenderer;
-
         rend.sprite = sprite;
         rend.transform.localScale = new Vector3(3f, 3f, 3f);
         rend.transform.position = pos;
+
+        var rBody = obj.AddComponent(typeof(Rigidbody2D)) as Rigidbody2D;
+        rBody.bodyType = RigidbodyType2D.Static;
+
+        var collider = obj.AddComponent(typeof(BoxCollider2D)) as BoxCollider2D;
+        collider.size = new Vector2(0.3f, 0.3f);
+        collider.sharedMaterial = elasticRubber;
+
         return obj;
     }
 
