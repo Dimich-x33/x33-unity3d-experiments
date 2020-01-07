@@ -4,27 +4,15 @@ using UnityEngine;
 
 public class LevelInit : MonoBehaviour
 {
-    public Vector2Int textureSpritesDimensions;
-    public int spriteSize = 32;
-    public Vector2 pivot = new Vector2(0.5f, 0.5f);
-    public GameObject[][] boxes;
-    public GameObject Ball;
-
-    public PhysicsMaterial2D elasticRubber;
+    public GameObject ball;
+    public Camera cam;
 
     // Start is called before the first frame update
     void Start()
     {
         try
         {
-            this.Ball = Instantiate(Resources.Load<GameObject>("Ball"), Vector3.zero, Quaternion.identity);
-
-            var sprites = LoadSprites("Textures");
-            var spriteMap = MapSpritesAndSymbols(sprites);
-            var charMap = LoadMapFromText("map");
-            this.boxes = BuildMap(charMap, spriteMap);
-
-            print("Success!!!");
+            this.cam.transform.position = new Vector3(this.ball.transform.position.x, 0, -10);
         }
         catch (System.Exception ex)
         {
@@ -36,117 +24,19 @@ public class LevelInit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow)) {
-            var rbody = this.Ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
-            rbody.AddForce(new Vector2(0, 1000));
+        this.cam.transform.position = new Vector3(this.ball.transform.position.x, 0, -10);
+
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            var rbody = this.ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
+            rbody.AddForce(new Vector2(0, 200));
         }
         if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            var rbody = this.Ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
-            rbody.AddForce(new Vector2(1000, 0));
+            var rbody = this.ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
+            rbody.AddForce(new Vector2(100, 0));
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-            var rbody = this.Ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
-            rbody.AddForce(new Vector2(-1000, 0));
+            var rbody = this.ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
+            rbody.AddForce(new Vector2(-100, 0));
         }
-    }
-
-    public char[][] LoadMapFromText(string path) {
-        var lines = Resources.Load<TextAsset>(path).text.Split('\n');
-        char[][] map = new char[lines.Length][];
-
-        for (int i = 0; i < lines.Length; ++i)
-        {
-            map[i] = lines[i].ToCharArray();
-        }
-
-        return map;
-    }
-
-    public GameObject[][] BuildMap(char[][] charMap, Dictionary<char, Sprite> charSpriteMap) {
-        var o = new GameObject[charMap.Length][];
-        var size = new Vector2Int(charMap[0].Length, charMap.Length);
-
-        for (int y = 0; y < charMap.Length; ++y)
-        {
-            o[y] = new GameObject[charMap[y].Length];
-
-            for (int x = 0; x < charMap[y].Length; ++x)
-            {
-                if (charSpriteMap.ContainsKey(charMap[y][x])) {
-                    var pos = new Vector3(x - size.x / 2, y - size.y / 2, Vector3.zero.z);
-                    o[y][x] = this.CreateStaticSpriteObject($"{x}*{y}", charSpriteMap[charMap[y][x]], pos);
-                }
-            }
-        }
-
-        return o;
-    }
-
-    public Sprite[] LoadSprites(string path) {
-        var texture2D = Resources.Load<Texture2D>(path);
-
-        if (texture2D == null) {
-            throw new System.Exception("Texture not loaded");
-        }
-
-        var sprites = new Sprite[textureSpritesDimensions.x * textureSpritesDimensions.y];
-
-        for (int i = 0, c = 0; i < textureSpritesDimensions.y; ++i) {
-            for (int j = 0; j < textureSpritesDimensions.x; ++j, ++c)
-            {
-                sprites[c] = Sprite.Create(
-                    texture2D,
-                    new Rect(spriteSize * j, spriteSize * i, spriteSize, spriteSize),
-                    pivot,
-                    32
-                );
-            }
-        }
-
-        return sprites;
-    }
-
-    public GameObject CreateStaticSpriteObject(string name, Sprite sprite, Vector3 pos) {
-        var obj = new GameObject(name);
-        var rend = obj.AddComponent(typeof(SpriteRenderer)) as SpriteRenderer;
-        rend.sprite = sprite;
-        rend.transform.position = pos;
-
-        var rBody = obj.AddComponent(typeof(Rigidbody2D)) as Rigidbody2D;
-        rBody.bodyType = RigidbodyType2D.Static;
-
-        var collider = obj.AddComponent(typeof(BoxCollider2D)) as BoxCollider2D;
-        collider.size = new Vector2(1f, 1f);
-        collider.sharedMaterial = elasticRubber;
-
-        return obj;
-    }
-
-    public Dictionary<char, Sprite> MapSpritesAndSymbols(Sprite[] sprites) {
-        var table = new Dictionary<char, Sprite>();
-
-        table.Add('A', sprites[0]);
-        table.Add('B', sprites[1]);
-        table.Add('C', sprites[2]);
-        table.Add('D', sprites[3]);
-        table.Add('E', sprites[4]);
-        table.Add('F', sprites[5]);
-        table.Add('G', sprites[6]);
-        table.Add('H', sprites[7]);
-        table.Add('I', sprites[8]);
-        table.Add('J', sprites[9]);
-        table.Add('K', sprites[10]);
-        table.Add('L', sprites[11]);
-        table.Add('M', sprites[12]);
-        table.Add('N', sprites[13]);
-        table.Add('O', sprites[14]);
-        table.Add('P', sprites[15]);
-        table.Add('Q', sprites[16]);
-        table.Add('R', sprites[17]);
-        table.Add('S', sprites[18]);
-        table.Add('T', sprites[19]);
-        table.Add('U', sprites[20]);
-
-        return table;
     }
 }
