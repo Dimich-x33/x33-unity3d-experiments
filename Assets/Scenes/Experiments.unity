@@ -223,12 +223,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87bb57758873d403aa0ef2897819d83b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fieldDimensions: {x: 10, y: 10}
   textureSpritesDimensions: {x: 8, y: 6}
   spriteSize: 32
   pivot: {x: 0.5, y: 0.5}
-  spriteObjects: []
-  sprites: []
+  Ball: {fileID: 0}
+  elasticRubber: {fileID: 0}
 --- !u!4 &2064591554
 Transform:
   m_ObjectHideFlags: 0
