@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class LevelInit : MonoBehaviour
 {
-    public Vector2Int fieldDimensions = new Vector2Int(10, 10);
     public Vector2Int textureSpritesDimensions = new Vector2Int(8, 6);
     public int spriteSize = 32;
     public Vector2 pivot = new Vector2(0.5f, 0.5f);
-    public GameObject[] spriteObjects;
-    public Sprite[] sprites;
+    public GameObject[][] objects;
 
     public string text = "Hello";
 
@@ -20,21 +18,17 @@ public class LevelInit : MonoBehaviour
     {
         try
         {
-            // this.spriteObjects = new GameObject[fieldDimensions.x * fieldDimensions.y];
-
-            // sprites = LoadSprites("Textures");
-
-            // FillFieldWithSprite(sprites[0]);
-
-            // StartCoroutine(UpdateSpriteObject());
-
-            LoadText();
+            var sprites = LoadSprites("Textures");
+            var spriteMap = MapSpritesAndSymbols(sprites);
+            var charMap = LoadMapFromText("map");
+            this.objects = BuildMap(charMap, spriteMap);
 
             print("Success!!!");
         }
         catch (System.Exception ex)
         {
             print(ex.Message);
+            print(ex.StackTrace);
         }
     }
 
@@ -44,29 +38,34 @@ public class LevelInit : MonoBehaviour
 
     }
 
-    public IEnumerator UpdateSpriteObject() {
-        while (true)
+    public char[][] LoadMapFromText(string path) {
+        var lines = Resources.Load<TextAsset>(path).text.Split('\n');
+        char[][] map = new char[lines.Length][];
+
+        for (int i = 0; i < lines.Length; i++)
         {
-            var r = Random.Range(0, fieldDimensions.x * fieldDimensions.y);
-            var s = Random.Range(0, textureSpritesDimensions.x * textureSpritesDimensions.y);
-            this.spriteObjects[r].GetComponent<SpriteRenderer>().sprite = sprites[s];
-
-            yield return new WaitForSeconds(updateSpriteRate);
+            map[i] = lines[i].ToCharArray();
         }
+
+        return map;
     }
 
-    public void LoadText() {
-        this.text = Resources.Load<TextAsset>("map").text;
-        // print(text);
-    }
+    public GameObject[][] BuildMap(char[][] charMap, Dictionary<char, Sprite> charSpriteMap) {
+        var o = new GameObject[charMap.Length][];
+        var size = new Vector2Int(charMap[0].Length, charMap.Length);
 
-    public void OnGUI () {
-        var style = new GUIStyle();
-        style.fontSize = 40;
-        style.border = new RectOffset(1, 1, 1, 1);
-        style.fontStyle = FontStyle.Italic;
-        style.richText = true;
-        GUI.Label(new Rect(Screen.width / 2 - 100f, Screen.height / 2, 200f, 200f), this.text, style);
+        for (int y = 0; y < charMap.Length; y++)
+        {
+            o[y] = new GameObject[charMap[y].Length];
+
+            for (int x = 0; x < charMap[y].Length; x++)
+            {
+                var pos = new Vector3(x - size.x / 2, y - size.y / 2, Vector3.zero.z);
+                o[y][x] = this.CreateSpriteObject($"{x}*{y}", charSpriteMap[charMap[y][x]], pos);
+            }
+        }
+
+        return o;
     }
 
     public Sprite[] LoadSprites(string path) {
@@ -92,19 +91,24 @@ public class LevelInit : MonoBehaviour
         return sprites;
     }
 
-    public void FillFieldWithSprite(Sprite initialSprite) {
-        for (int y = 0, c = 0; y < fieldDimensions.y; ++y)
-        {
-            for (int x = 0; x < fieldDimensions.x; ++x, ++c)
-            {
-                var obj = new GameObject($"{y}*{x}");
-                var rend = obj.AddComponent(typeof(SpriteRenderer)) as SpriteRenderer;
+    public GameObject CreateSpriteObject(string name, Sprite sprite, Vector3 pos) {
+        var obj = new GameObject(name);
+        var rend = obj.AddComponent(typeof(SpriteRenderer)) as SpriteRenderer;
 
-                rend.sprite = initialSprite;
-                rend.transform.localScale = new Vector3(3f, 3f, 3f);
-                rend.transform.position = new Vector3(x - fieldDimensions.x / 2, y - fieldDimensions.y / 2, Vector3.zero.z);
-                this.spriteObjects[c] = obj;
-            }
-        }
+        rend.sprite = sprite;
+        rend.transform.localScale = new Vector3(3f, 3f, 3f);
+        rend.transform.position = pos;
+        return obj;
+    }
+
+    public Dictionary<char, Sprite> MapSpritesAndSymbols(Sprite[] sprites) {
+        var table = new Dictionary<char, Sprite>();
+
+        table.Add('A', sprites[0]);
+        table.Add('B', sprites[1]);
+        table.Add('C', sprites[2]);
+        table.Add('D', sprites[3]);
+
+        return table;
     }
 }

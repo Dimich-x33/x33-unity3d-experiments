@@ -1,1 +1,4 @@
-<b><color=lime>Hello, World!</color></b>
+AAABBBCCCDDD
+DDDCCCBBBAAA
+AAABBBCCCDDD
+DDDCCCBBBAAA
