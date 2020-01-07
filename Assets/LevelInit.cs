@@ -36,13 +36,17 @@ public class LevelInit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.RightArrow)) {
+        if (Input.GetKeyDown(KeyCode.UpArrow)) {
             var rbody = this.Ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
-            rbody.AddForce(new Vector2(50, 0));
+            rbody.AddForce(new Vector2(0, 1000));
         }
-        if (Input.GetKeyUp(KeyCode.LeftArrow)) {
+        if (Input.GetKeyDown(KeyCode.RightArrow)) {
             var rbody = this.Ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
-            rbody.AddForce(new Vector2(-50, 0));
+            rbody.AddForce(new Vector2(1000, 0));
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+            var rbody = this.Ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
+            rbody.AddForce(new Vector2(-1000, 0));
         }
     }
 
@@ -93,7 +97,8 @@ public class LevelInit : MonoBehaviour
                 sprites[c] = Sprite.Create(
                     texture2D,
                     new Rect(spriteSize * j, spriteSize * i, spriteSize, spriteSize),
-                    pivot
+                    pivot,
+                    32
                 );
             }
         }
@@ -105,14 +110,13 @@ public class LevelInit : MonoBehaviour
         var obj = new GameObject(name);
         var rend = obj.AddComponent(typeof(SpriteRenderer)) as SpriteRenderer;
         rend.sprite = sprite;
-        rend.transform.localScale = new Vector3(3f, 3f, 3f);
         rend.transform.position = pos;
 
         var rBody = obj.AddComponent(typeof(Rigidbody2D)) as Rigidbody2D;
         rBody.bodyType = RigidbodyType2D.Static;
 
         var collider = obj.AddComponent(typeof(BoxCollider2D)) as BoxCollider2D;
-        collider.size = new Vector2(0.3f, 0.3f);
+        collider.size = new Vector2(1f, 1f);
         collider.sharedMaterial = elasticRubber;
 
         return obj;

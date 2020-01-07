@@ -1,6 +1,6 @@
 AAAAAAAAAAAAAAA
 AB           BA
-ABDDCCCCCCCCCBA
+ABDDCCCCCCC  BA
 AB           BA
 AB           BA
 AB           BA
