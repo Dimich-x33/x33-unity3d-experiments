@@ -1,4 +1,9 @@
-AAABBBCCCDDD
-DDDCCCBBBAAA
-AAABBBCCCDDD
-DDDCCCBBBAAA
+AAAAAAAAAAAAAAA
+AB           BA
+AB           BA
+AB           BA
+AB           BA
+AB           BA
+AB           BA
+AB           BA
+AAAAAAAAAAAAAAA

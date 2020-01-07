@@ -60,8 +60,10 @@ public class LevelInit : MonoBehaviour
 
             for (int x = 0; x < charMap[y].Length; x++)
             {
-                var pos = new Vector3(x - size.x / 2, y - size.y / 2, Vector3.zero.z);
-                o[y][x] = this.CreateSpriteObject($"{x}*{y}", charSpriteMap[charMap[y][x]], pos);
+                if (charSpriteMap.ContainsKey(charMap[y][x])) {
+                    var pos = new Vector3(x - size.x / 2, y - size.y / 2, Vector3.zero.z);
+                    o[y][x] = this.CreateSpriteObject($"{x}*{y}", charSpriteMap[charMap[y][x]], pos);
+                }
             }
         }
 
@@ -108,6 +110,23 @@ public class LevelInit : MonoBehaviour
         table.Add('B', sprites[1]);
         table.Add('C', sprites[2]);
         table.Add('D', sprites[3]);
+        table.Add('E', sprites[4]);
+        table.Add('F', sprites[5]);
+        table.Add('G', sprites[6]);
+        table.Add('H', sprites[7]);
+        table.Add('I', sprites[8]);
+        table.Add('J', sprites[9]);
+        table.Add('K', sprites[10]);
+        table.Add('L', sprites[11]);
+        table.Add('M', sprites[12]);
+        table.Add('N', sprites[13]);
+        table.Add('O', sprites[14]);
+        table.Add('P', sprites[15]);
+        table.Add('Q', sprites[16]);
+        table.Add('R', sprites[17]);
+        table.Add('S', sprites[18]);
+        table.Add('T', sprites[19]);
+        table.Add('U', sprites[20]);
 
         return table;
     }
