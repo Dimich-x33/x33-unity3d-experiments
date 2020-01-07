@@ -11,6 +11,8 @@ public class LevelInit : MonoBehaviour
     public GameObject[] spriteObjects;
     public Sprite[] sprites;
 
+    public string text = "Hello";
+
     public float updateSpriteRate = 0.2f;
 
     // Start is called before the first frame update
@@ -18,15 +20,15 @@ public class LevelInit : MonoBehaviour
     {
         try
         {
+            // this.spriteObjects = new GameObject[fieldDimensions.x * fieldDimensions.y];
 
+            // sprites = LoadSprites("Textures");
 
-            this.spriteObjects = new GameObject[fieldDimensions.x * fieldDimensions.y];
+            // FillFieldWithSprite(sprites[0]);
 
-            sprites = LoadSprites("Textures");
+            // StartCoroutine(UpdateSpriteObject());
 
-            FillFieldWithSprite(sprites[0]);
-
-            StartCoroutine(UpdateSpriteObject());
+            LoadText();
 
             print("Success!!!");
         }
@@ -51,6 +53,20 @@ public class LevelInit : MonoBehaviour
 
             yield return new WaitForSeconds(updateSpriteRate);
         }
+    }
+
+    public void LoadText() {
+        this.text = Resources.Load<TextAsset>("map").text;
+        // print(text);
+    }
+
+    public void OnGUI () {
+        var style = new GUIStyle();
+        style.fontSize = 40;
+        style.border = new RectOffset(1, 1, 1, 1);
+        style.fontStyle = FontStyle.Italic;
+        style.richText = true;
+        GUI.Label(new Rect(Screen.width / 2 - 100f, Screen.height / 2, 200f, 200f), this.text, style);
     }
 
     public Sprite[] LoadSprites(string path) {
