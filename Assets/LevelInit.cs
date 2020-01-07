@@ -12,7 +12,7 @@ public class LevelInit : MonoBehaviour
     {
         try
         {
-            this.cam.transform.position = new Vector3(this.ball.transform.position.x, 0, -10);
+            this.cam.transform.position = new Vector3(this.ball.transform.position.x, this.ball.transform.position.y, -10);
         }
         catch (System.Exception ex)
         {
@@ -24,19 +24,20 @@ public class LevelInit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.cam.transform.position = new Vector3(this.ball.transform.position.x, 0, -10);
+        var rbody = this.ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
+        this.cam.transform.position = new Vector3(this.ball.transform.position.x, this.ball.transform.position.y, -10);
 
         if (Input.GetKeyDown(KeyCode.Space)) {
-            var rbody = this.ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
             rbody.AddForce(new Vector2(0, 200));
         }
         if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            var rbody = this.ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
             rbody.AddForce(new Vector2(100, 0));
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-            var rbody = this.ball.GetComponent(typeof(Rigidbody2D)) as Rigidbody2D;
             rbody.AddForce(new Vector2(-100, 0));
+        }
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            Application.Quit();
         }
     }
 }
